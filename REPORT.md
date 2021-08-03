@@ -2,7 +2,7 @@
 title: "REPORT"
 author: "Bole and Oscar"
 date: "8/2/2021"
-output: html_document
+output: .md document
 ---
 # Genomic analysis reveals independent evolution of Plasmodium falciparum populations in Ethiopia; Reproducing methods
 ## Introduction 
