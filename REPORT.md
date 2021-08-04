@@ -56,6 +56,7 @@ SelectVariants was used for selecting. This tool makes it possible to select a s
 SnpEff is an open source tool that annotates variants and predicts their effects on genes by using an interval forest approach. This program takes pre-determined variants listed in a data file that contains the nucleotide change and its position and predicts if the variants are deleterious.
 ### Building database.
 SnpEff needs a database to perform genomic annotations. For our case it required us to build the database for Pfalciparum(3D7v.31) using snpEff.config (configures a new genome).We added genome entry to snpEff's configuration;
+
 1.Get a GFF file 
 ````
 mkdir path/to/snpEff/data/3D7v.31
