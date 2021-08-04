@@ -86,7 +86,7 @@ Annotation is the process of identifying the locations of genes and all of the c
 ````
 java -Xmx8g -jar snpEff.jar 3D7v.31 /opt/data/oscarmwaura/data/snps.g.vcf.gz  > snp.ann.g.vcf.gz
 ````
-The snpEff annotation gives three files as output; vcf file[click here]() , txt file[click here]() and html [click here]().
+The snpEff annotation gives three files as output; vcf file[click here]() , txt file[click here]() and html [click here](file:///C:/Users/Oscar%20Mwaura/Downloads/snpEff_summary.html)
 
 ## Conclusion
 We successfully managed to do variant discovery and annotation of the variants.
