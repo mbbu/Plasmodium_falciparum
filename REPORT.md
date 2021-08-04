@@ -16,7 +16,7 @@ We used Git and GitHub for collaboratively creating scripts, sharing results, an
 we obtained the data through the provided link in the paper[click here](https://www.malariagen.net/data/pf3k-5)
 We downloaded reference genome and already aligned Bam fileS. The script used to download the data is [here]() and [here]() respectively.
 ## Indexing and creating dictionary
-
+Indexing a genome can be explained similar to indexing a book. If you want to know on which page a certain word appears or a chapter begins, it is much more efficient/faster to look it up in a pre-built index than going through every page of the book until you found it. Same goes for variant discovery. Indices allows,e.g Haplotypecaller  to narrow down the potential origin of a query variant within the file, saving both time and memory.The script for indexing of the variants (BAM file) is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/sam_hapt.sh)
 ## Variant calling
 varint calling was done using gatk's Haplotypecaller "Best practices". Haplotypecaller calls germline SNPs and indels via local re-assembly of haplotypes. HaplotypeCaller runs per-sample to generate an intermediate GVCF, which can then be used in GenotypeGVCFs for joint genotyping of multiple samples in a very efficient way. In addition, HaplotypeCaller is able to handle non-diploid organisms as well as pooled experiment data. 
 The script used for Haplotypecaller and result are [here]() and [here]() respectively.
