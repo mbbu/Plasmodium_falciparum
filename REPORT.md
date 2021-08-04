@@ -87,7 +87,7 @@ Annotation is the process of identifying the locations of genes and all of the c
 ````
 java -Xmx8g -jar snpEff.jar 3D7v.31 /opt/data/oscarmwaura/data/snps.g.vcf.gz  > snp.ann.g.vcf.gz
 ````
-The snpEff annotation gives three files as output; vcf file[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Annotated_snps.png) , txt file[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/snpEff_genes.txt) and html [click her](https://github.com/bolekj/Plasmodium_falciparum/blob/master/snpEff_summary.html)
+The snpEff annotation gives three files as output; vcf file[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Annotated_snps.png) , txt file[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/snpEff_genes.txt) and html [click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/snpEff_summary.html)
 
 ## Conclusion
 We successfully managed to do variant discovery and annotation of the variants.
