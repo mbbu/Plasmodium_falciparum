@@ -88,5 +88,6 @@ java -Xmx8g -jar snpEff.jar 3D7v.31 /opt/data/oscarmwaura/data/snps.g.vcf.gz  > 
 ````
 The snpEff annotation gives three files as output; vcf file[click here]() , txt file[click here]() and html [click here]().
 
-
+## Conclusion
+We successfully managed to do variant discovery and annotation of the variants.
 
