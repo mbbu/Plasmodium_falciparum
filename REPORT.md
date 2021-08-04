@@ -14,18 +14,27 @@ The exercise was carried out using the HPC available at the center. It is compos
 We used Git and GitHub for collaboratively creating scripts, sharing results, and discussing the output. This tool allowed us to collaborate effectively.
 ## Obtaining data 
 we obtained the data through the provided link in the paper[click here](https://www.malariagen.net/data/pf3k-5)
-We downloaded reference genome and already aligned Bam fileS. The script used to download the data is [here]() and [here]() respectively.
+We downloaded reference genome and already aligned Bam fileS. The script used to download the data is ```` wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/Pfalciparum.genome.fasta.gz ```` and ````wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/BAM/*.bam```` respectively.
 ## Indexing and creating dictionary
-Indexing a genome can be explained similar to indexing a book. If you want to know on which page a certain word appears or a chapter begins, it is much more efficient/faster to look it up in a pre-built index than going through every page of the book until you found it. Same goes for variant discovery. Indices allows,e.g Haplotypecaller  to narrow down the potential origin of a query variant within the file, saving both time and memory.The script for indexing of the variants (BAM file) is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/sam_hapt.sh)
+Indexing a genome can be explained similar to indexing a book. If you want to know on which page a certain word appears or a chapter begins, it is much more efficient/faster to look it up in a pre-built index than going through every page of the book until you found it. Same goes for variant discovery. Indices allows,e.g Haplotypecaller  to narrow down the potential origin of a query variant within the file, saving both time and memory.
+Dictionary
+The script for indexing of the variants (BAM file) is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/sam_hapt.sh) and here
+````
+#creating dictionary for refrence genome
+gatk CreateSequenceDictionary -R Pfalciparum.genome.fasta
+#creating index for refrence genome
+samtools faidx Pfalciparum.genome.fasta
+````
+
 ## Variant calling
 varint calling was done using gatk's Haplotypecaller "Best practices". Haplotypecaller calls germline SNPs and indels via local re-assembly of haplotypes. HaplotypeCaller runs per-sample to generate an intermediate GVCF, which can then be used in GenotypeGVCFs for joint genotyping of multiple samples in a very efficient way. In addition, HaplotypeCaller is able to handle non-diploid organisms as well as pooled experiment data. 
-The script used for Haplotypecaller and result are [here]() and [here]() respectively.
+The script used for Haplotypecaller and result are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/sam_hapt.sh) and [here]() respectively.
 ## Combining.
 We merged our HaplotypeCaller GVCF files into a single GVCF with appropriate annotations using CombineGVCFs.CombineGVCFs is meant to be used for merging of GVCFs that will eventually be input into GenotypeGVCFs.
-The script used for CombineGVCFs and result are [here]() and [here]() respectively.
+The script used for CombineGVCFs and result are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/combined.sh) and [here]() respectively.
 ## Genotyping.
-We genotyped the combined GVCF file obtained from the CombineGVCFs tool using GenotypeGVCFs.This tool is designed to perform joint genotyping on a single input, which may contain one or many samples. In any case, the input samples must possess genotype likelihoods produced by HaplotypeCaller with `-ERC GVCF` or `-ERC BP_RESOLUTION
-The script used for GenotypeGVCFs and result are [here]() and [here]() respectively.
+We genotyped the combined GVCF file obtained from the CombineGVCFs tool using GenotypeGVCFs.This tool is designed to perform joint genotyping on a single input, which may contain one or many samples. In any case, the input samples must possess genotype likelihoods produced by HaplotypeCaller with _-ERC GVCF_ or _-ERC BP_RESOLUTION_
+The script used for GenotypeGVCFs and result are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/genotype.sh) and [here]() respectively.
 ## Assigning quality score
 We used Hard-filtering germline short variants guidelines for filtering.
 Hard-filtering consists of choosing specific thresholds for one or more annotations and throwing out any variants that have annotation values above or below the set thresholds. By annotations, we mean properties or statistics that describe for each variant(QD,MQ,FS,DP,SOR,). 
@@ -39,10 +48,10 @@ This is the Phred-scaled probability that there is strand bias at the site. Stra
 This is another way to estimate strand bias using a test similar to the symmetric odds ratio test. SOR was created because FS tends to penalize variants that occur at the ends of exons. Reads at the ends of exons tend to only be covered by reads in one direction and FS gives those variants a bad score. SOR will take into account the ratios of reads that cover both alleles.
 ## Filtering
 The filtering thresholds were obtained from the ggplot(data visualizing tool) on R-studio using a table generated from gatk's VariantsTotable (this tool extracts specified fields for each variant in a VCF file to a tab-delimited table)
-The script of VariantsTotable and ggplots are [here]() and [here]() and the results are [here]() and [here]() respectively.
-After obtaining the thresholds, gatk's VariantFiltration tool (which is designed for hard-filtering variant calls based on certain criteria) was used.The script used is [here]() 
+The script of VariantsTotable and ggplots are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/table.sh) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/ggplot_scripts.R) and the results are [here]() and [here](https://github.com/bolekj/Plasmodium_falciparum/tree/master/ggplots) respectively.
+After obtaining the thresholds, gatk's VariantFiltration tool (which is designed for hard-filtering variant calls based on certain criteria) was used.The script used is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/filter.sh) 
 ## selecting.
-SelectVariants was used for selecting. This tool makes it possible to select a subset of variants based on various criteria in order to facilitate certain analyses. The criteria we used in this tool were for selecting variants that have passed all the filtering threshholds and from the output of this we selected SNPs. the scripts we used are [here]() and [here]() respectively.The results on the same are [here]() and [here]() respectively.
+SelectVariants was used for selecting. This tool makes it possible to select a subset of variants based on various criteria in order to facilitate certain analyses. The criteria we used in this tool were for selecting variants that have passed all the filtering threshholds and from the output of this we selected SNPs. the scripts we used are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/select.sh) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/snpselect.sh) respectively.The results on the same are [here]() and [here]() respectively.
 ## snpEff
 SnpEff is an open source tool that annotates variants and predicts their effects on genes by using an interval forest approach. This program takes pre-determined variants listed in a data file that contains the nucleotide change and its position and predicts if the variants are deleterious.
 ### Building database.
