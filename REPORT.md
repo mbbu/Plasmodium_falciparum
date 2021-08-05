@@ -91,8 +91,10 @@ The snpEff annotation gives three files as output; vcf file[click here](https://
 ## Population structure: PCA
 We then investigated population structure using principal components analysis.Examing population structure can give us a great deal of insight into the history and origin of populations. To perform a PCA on our cichlids data, we used plink -version (1.9). The following are the steps we took;
 ### 1.Linkage pruning
-
-
+One of the major assumptions of PCA is that the data we use is indpendent, so as a first step, we need to prune our dataset of variants that are in linkage. We begun by creating a directory were we carried out all the steps necessary for pca analysis.
+The script we used to do linkage pruning is [here]().When complete, it will write out two files cichlids.prune.in[click here]() and cichlids.prune.out[click here](). The first one is a list of sites which fell below our linkage threshold - i.e. those we should retain. The other file is the opposite of this.
+### 2.Perform a PCA
+Next we rerun plink with a few additional arguments to get it to conduct a PCA.[click here]() for the script we used. Once the command is run, we will see a series of new files which includes three plink binary files and PCA output. 
 ## Conclusion
 We successfully managed to do variant discovery and annotation of the variants.
 
