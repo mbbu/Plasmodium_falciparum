@@ -1,0 +1,12 @@
+PLINK v1.90b6.21 64-bit (19 Oct 2020)
+Options in effect:
+  --vcf snp.ann.vcf  
+
+Hostname: icipe-HP-Z220-SFF-Workstation
+Working directory: /home/icipe/Downloads/Bole_internship/mini_project/down_stream/vcf
+Start time: Thu Aug  5 13:38:08 2021
+
+Error: --vcf only accepts 1 parameter.
+For more information, try "plink --help <flag name>" or "plink --help | more".
+
+End time: Thu Aug  5 13:38:08 2021

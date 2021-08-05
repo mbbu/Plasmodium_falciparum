@@ -1,0 +1,38 @@
+PLINK v1.90b6.21 64-bit (19 Oct 2020)
+Options in effect:
+  --allow-extra-chr
+  --double-id
+  --extract cichlids.prune.in
+  --make-bed
+  --mind
+  --out cichlids_pca
+  --pca
+  --set-missing-var-ids @:#
+  --vcf snp.ann.vcf
+
+Hostname: icipe-HP-Z220-SFF-Workstation
+Working directory: /home/icipe/Downloads/Bole_internship/mini_project/down_stream/vcf
+Start time: Thu Aug  5 14:33:42 2021
+
+Random number seed: 1628163222
+3809 MB RAM detected; reserving 1904 MB for main workspace.
+--vcf: cichlids_pca-temporary.bed + cichlids_pca-temporary.bim +
+cichlids_pca-temporary.fam written.
+643904 variants loaded from .bim file.
+643904 missing IDs set.
+77 people (0 males, 0 females, 77 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to cichlids_pca.nosex .
+--extract: 141442 variants remaining.
+34 people removed due to missing genotype data (--mind).
+IDs written to cichlids_pca.irem .
+Using up to 4 threads (change this with --threads).
+Before main variant filters, 43 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate in remaining samples is 0.912221.
+141442 variants and 43 people pass filters and QC.
+Note: No phenotypes present.
+Relationship matrix calculation complete.
+--pca: Results saved to cichlids_pca.eigenval and cichlids_pca.eigenvec .
+--make-bed to cichlids_pca.bed + cichlids_pca.bim + cichlids_pca.fam ... done.
+
+End time: Thu Aug  5 14:33:45 2021

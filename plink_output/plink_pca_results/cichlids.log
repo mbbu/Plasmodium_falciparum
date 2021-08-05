@@ -1,0 +1,47 @@
+PLINK v1.90b6.21 64-bit (19 Oct 2020)
+Options in effect:
+  --allow-extra-chr
+  --double-id
+  --indep-pairwise 50 10 0.1
+  --out cichlids
+  --set-missing-var-ids @:#
+  --vcf snp.ann.vcf
+
+Hostname: icipe-HP-Z220-SFF-Workstation
+Working directory: /home/icipe/Downloads/Bole_internship/mini_project/down_stream/vcf
+Start time: Thu Aug  5 14:18:23 2021
+
+Random number seed: 1628162303
+3809 MB RAM detected; reserving 1904 MB for main workspace.
+--vcf: cichlids-temporary.bed + cichlids-temporary.bim + cichlids-temporary.fam
+written.
+643904 variants loaded from .bim file.
+643904 missing IDs set.
+77 people (0 males, 0 females, 77 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to cichlids.nosex .
+Using 1 thread (no multithreaded calculations invoked).
+Before main variant filters, 77 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is 0.81368.
+643904 variants and 77 people pass filters and QC.
+Note: No phenotypes present.
+Pruned 26554 variants from chromosome 27, leaving 6197.
+Pruned 28137 variants from chromosome 28, leaving 7459.
+Pruned 26986 variants from chromosome 29, leaving 7859.
+Pruned 43433 variants from chromosome 30, leaving 9832.
+Pruned 17643 variants from chromosome 31, leaving 5709.
+Pruned 33257 variants from chromosome 32, leaving 8008.
+Pruned 44985 variants from chromosome 33, leaving 10247.
+Pruned 40743 variants from chromosome 34, leaving 10241.
+Pruned 35369 variants from chromosome 35, leaving 10449.
+Pruned 40065 variants from chromosome 36, leaving 11166.
+Pruned 34692 variants from chromosome 37, leaving 10650.
+Pruned 49957 variants from chromosome 38, leaving 14115.
+Pruned 40803 variants from chromosome 39, leaving 14794.
+Pruned 38416 variants from chromosome 40, leaving 14592.
+Pruned 1159 variants from chromosome 41, leaving 98.
+Pruned 263 variants from chromosome 42, leaving 26.
+Pruning complete.  502462 of 643904 variants removed.
+Marker lists written to cichlids.prune.in and cichlids.prune.out .
+
+End time: Thu Aug  5 14:18:49 2021
