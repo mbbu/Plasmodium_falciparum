@@ -89,12 +89,12 @@ java -Xmx8g -jar snpEff.jar 3D7v.31 /opt/data/oscarmwaura/data/snps.g.vcf.gz  > 
 ````
 The snpEff annotation gives three files as output; vcf file[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Annotated_snps.png) , txt file[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/snpEff_genes.txt) and html [click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/snpEff_summary.html)
 ## Population structure: PCA
-We then investigated population structure using principal components analysis.Examing population structure can give us a great deal of insight into the history and origin of populations. To perform a PCA on our cichlids data, we used plink -version (1.9). The following are the steps we took;
+We then investigated population structure using principal components analysis.Examing population structure can give us a great deal of insight into the history and origin of populations. To perform a PCA on our snp.ann.vcf data, we used plink -version (1.9). The following are the steps we took;
 ### 1.Linkage pruning
 One of the major assumptions of PCA is that the data we use is indpendent, so as a first step, we need to prune our dataset of variants that are in linkage. We begun by creating a directory were we carried out all the steps necessary for pca analysis.
-The script we used to do linkage pruning is [here]().When complete, it will write out two files cichlids.prune.in[click here]() and cichlids.prune.out[click here](). The first one is a list of sites which fell below our linkage threshold - i.e. those we should retain. The other file is the opposite of this.
+The script we used to do linkage pruning is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_scripts/plunsit.sh).When complete, it will write out two files cichlids.prune.in[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids.prune.in) and cichlids.prune.out[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids.prune.out). The first one is a list of sites which fell below our linkage threshold - i.e. those we should retain. The other file is the opposite of this.
 ### 2.Perform a PCA
-Next we rerun plink with a few additional arguments to get it to conduct a PCA.[click here]() for the script we used.The output gave us a series of new files which; three plink binary [bim](),[bed](),[fam]() files and two PCA output cichlids.eigenval[click here]() cichlids.eigenvec[click here]()
+Next we rerun plink with a few additional arguments to get it to conduct a PCA.[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_scripts/pca.sh) for the script we used.The output gave us a series of new files which; three plink binary [bim](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.bim),[bed](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.bed),[fam](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.fam) files and two PCA output cichlids.eigenval[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.eigenval) cichlids.eigenvec[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.eigenvec)
 ### 3.Plotting the PCA output
 We then turned to R to plot the analysis we have produced!
 We first moved the plink output (the two PCA output) into the working directory,then loaded the tidyverse package.
@@ -104,10 +104,13 @@ The output we got after reading in and scanning  was not in reasonable form, so 
 . We will do this using the R version of grep. We then use paste0 to combine the columns.
 With these variables created, we remade our data.frame. Note the use of as.tibble to ensure that we make a tibble for easy summaries
 #### Plotting the data
-We first made a plot of the eigenvalues. It is quite straightforward to translate these into percentage variance explained. We then created bar plot showing the percentage of variance each principal component explains.
-We could calculate this with the cumsum function
+We first made a plot of the eigenvalues[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/Rplot_pca_pva.pdf)
+We then calculated the cumulative sum of the percentage variance.
 Next we moved on to the actual plotting of our PCA. 
-The Rscript we used for performing all this is as provided [here]() 
+The Rscript we used for performing all this is as provided [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/Plink_pca_Rscripts/plink_pca.R) 
+The pca plot we got is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/Rplot_pca.pdf)
 ## Conclusion
-We successfully managed to do variant discovery and annotation of the variants.
+We successfully managed to do variant discovery, annotation of the variants and population structure using principle component analysis.
+The results we obtained in all the steps are not as obtained in the paper because when downloading we did not get all the raw data.
+We continued with the steps in the paper because the main aim of this exercise was to learn on how to go around when given project(see the workflow).
 
