@@ -14,10 +14,10 @@ The exercise was carried out using the HPC available at the center. It is compos
 We used Git and GitHub for collaboratively creating scripts, sharing results, and discussing the output. This tool allowed us to collaborate effectively.
 ## Obtaining data 
 we obtained the data through the provided link in the paper[click here](https://www.malariagen.net/data/pf3k-5)
-We downloaded reference genome and already aligned Bam fileS. The script used to download the data is ```` wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/Pfalciparum.genome.fasta.gz ```` and ````wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/BAM/*.bam```` respectively.
+We downloaded reference genome and already aligned Bam files. The script used to download the data is ```` wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/Pfalciparum.genome.fasta.gz ```` and ````wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/BAM/*.bam```` respectively.
 ## Indexing and creating dictionary
-Indexing a genome can be explained similar to indexing a book. If you want to know on which page a certain word appears or a chapter begins, it is much more efficient/faster to look it up in a pre-built index than going through every page of the book until you found it. Same goes for variant discovery. Indices allows,e.g Haplotypecaller  to narrow down the potential origin of a query variant within the file, saving both time and memory.
-Creates a sequence dictionary for a reference sequence. This tool creates a sequence dictionary file (with ".dict" extension) from a reference sequence provided in FASTA format, which is required by processing and analysis tools.
+Indexing a genome can be explained similar to indexing a book. If you want to know on which page a certain word appears or a chapter begins, it is much more efficient/faster to look it up in a pre-built index than going through every page of the book until you found it. Same goes for variant discovery. Indices allows,e.g Haplotypecaller  to narrow down the potential origin of a query variant within the file, saving both time and memory.Samtools index was used for this.
+CreateSequenceDictionary, this tool creates a sequence dictionary file (with ".dict" extension) from a reference sequence provided in FASTA format, which is required by processing and analysis tools.
 The script for indexing of the variants (BAM file) is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/sam_hapt.sh) and for creating dictionary and indexing of refrence genome as below;
 ````
 #creating dictionary for refrence genome
