@@ -14,12 +14,27 @@ The exercise was carried out using the HPC available at the center. It is compos
 We used Git and GitHub for collaboratively creating scripts, sharing results, and discussing the output. This tool allowed us to collaborate effectively.
 ## Obtaining data 
 we obtained the data through the provided link in the paper[click here](https://www.malariagen.net/data/pf3k-5)
-We downloaded reference genome and already aligned Bam files. The script used to download the data is ```` wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/Pfalciparum.genome.fasta.gz ```` and ````wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/BAM/*.bam```` respectively.
+We downloaded reference genome and already aligned Bam files. The script used to download the data 
+````
+# downloading reference file
+wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/Pfalciparum.genome.fasta.gz 
+# downloading the bam files
+wget ftp://ngs.sanger.ac.uk/production/pf3k/release_5/BAM/*.bam
+````
 ## Indexing and creating dictionary
 Indexing a genome can be explained similar to indexing a book. If you want to know on which page a certain word appears or a chapter begins, it is much more efficient/faster to look it up in a pre-built index than going through every page of the book until you found it. Same goes for variant discovery. Indices allows,e.g Haplotypecaller  to narrow down the potential origin of a query variant within the file, saving both time and memory.Samtools index was used for this.
 CreateSequenceDictionary, this tool creates a sequence dictionary file (with ".dict" extension) from a reference sequence provided in FASTA format, which is required by processing and analysis tools.
-The script for indexing of the variants (BAM file) is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/sam_hapt.sh) and for creating dictionary and indexing of refrence genome as below;
+The script for indexing of the variants (BAM file) is;
 ````
+#indexing of bam files
+for file in *bam;
+    do
+    samtools index -b $file
+done
+````
+and for creating dictionary and indexing of refrence genome as below;
+````
+
 #creating dictionary for refrence genome
 gatk CreateSequenceDictionary -R Pfalciparum.genome.fasta
 #creating index for refrence genome
@@ -28,13 +43,31 @@ samtools faidx Pfalciparum.genome.fasta
 
 ## Variant calling
 varint calling was done using gatk's Haplotypecaller "Best practices". Haplotypecaller calls germline SNPs and indels via local re-assembly of haplotypes. HaplotypeCaller runs per-sample to generate an intermediate GVCF, which can then be used in GenotypeGVCFs for joint genotyping of multiple samples in a very efficient way. In addition, HaplotypeCaller is able to handle non-diploid organisms as well as pooled experiment data. 
-The script used for Haplotypecaller and result are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/sam_hapt.sh) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Haplotypecaller.png) respectively.
+The script used for Haplotypecaller
+```` 
+#Hapolotype
+parallel 'gatk HaplotypeCaller -R Pfalciparum.genome.fasta  -I {} -O {}.hppc.g.vcf' -ERC GVCF ::: *.bam
+
+````  
+and the result is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Haplotypecaller.png).
 ## Combining.
 We merged our HaplotypeCaller GVCF files into a single GVCF with appropriate annotations using CombineGVCFs.CombineGVCFs is meant to be used for merging of GVCFs that will eventually be input into GenotypeGVCFs.
-The script used for CombineGVCFs and result are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/combined.sh) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/combinedvcf.png) respectively.
+The script used for CombineGVCFs
+````
+ls vcf* > vcf.list
+gatk CombineGVCFs -R Pfalciparum.genome.fasta --variant vcfs.list -O combined.g.vcf.gz 
+````
+and result [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/combinedvcf.png).
 ## Genotyping.
 We genotyped the combined GVCF file obtained from the CombineGVCFs tool using GenotypeGVCFs.This tool is designed to perform joint genotyping on a single input, which may contain one or many samples. In any case, the input samples must possess genotype likelihoods produced by HaplotypeCaller with _-ERC GVCF_ or _-ERC BP_RESOLUTION_
-The script used for GenotypeGVCFs and result are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/genotype.sh) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Genotyped.png) respectively.
+The script used;
+````
+gatk --java-options "-Xmx4g" GenotypeGVCFs \
+   -R Pfalciparum.genome.fasta \
+   -V combined.g.vcf.gz \
+   -O genotyped.g.vcf.gz
+````
+and result [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Genotyped.png).
 ## Assigning quality score
 We used Hard-filtering germline short variants guidelines for filtering.
 Hard-filtering consists of choosing specific thresholds for one or more annotations and throwing out any variants that have annotation values above or below the set thresholds. By annotations, we mean properties or statistics that describe for each variant(QD,MQ,FS,DP,SOR,). 
@@ -48,10 +81,57 @@ This is the Phred-scaled probability that there is strand bias at the site. Stra
 This is another way to estimate strand bias using a test similar to the symmetric odds ratio test. SOR was created because FS tends to penalize variants that occur at the ends of exons. Reads at the ends of exons tend to only be covered by reads in one direction and FS gives those variants a bad score. SOR will take into account the ratios of reads that cover both alleles.
 ## Filtering
 The filtering thresholds were obtained from the ggplot(data visualizing tool) on R-studio using a table generated from gatk's VariantsTotable (this tool extracts specified fields for each variant in a VCF file to a tab-delimited table)
-The script of VariantsTotable and ggplots are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/table.sh) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/ggplot_scripts.R) and the results are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Hardfilter.table) and [here](https://github.com/bolekj/Plasmodium_falciparum/tree/master/ggplots) respectively.
-After obtaining the thresholds, gatk's VariantFiltration tool (which is designed for hard-filtering variant calls based on certain criteria) was used.The script used is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/filter.sh) 
+The script of VariantsTotable
+````gatk VariantsToTable -V genotyped.g.vcf.gz -F QD -F FS -F SOR -F MQ -F DP -O Hardfilter.table ```` 
+and ggplots scripts are 
+````
+library(ggplot2)
+QD.plot <- ggplot(data = Hardfilter, aes(x=QD)) + geom_density(alpha=0.2)
+QD.plot
+#generating MQ  PLOT
+MQ.plot <- ggplot(data = Hardfilter, aes(x=MQ)) + geom_density(alpha=0.2)
+MQ.plot
+#Generating SOR plot
+SOR.plot <- ggplot(data = Hardfilter, aes(x=SOR)) + geom_density(alpha=0.2)
+SOR.plot
+#Generating FS
+FS.plot <- ggplot(data = Hardfilter, aes(x=FS)) + geom_density(alpha=0.2)
+FS.plot + scale_x_log10()
+````
+and the results are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Hardfilter.table) and result [here](https://github.com/bolekj/Plasmodium_falciparum/tree/master/ggplot/.
+After obtaining the thresholds, gatk's VariantFiltration tool (which is designed for hard-filtering variant calls based on certain criteria) was used.The script used;
+````
+gatk VariantFiltration \
+   -R Pfalciparum.genome.fasta \
+   -V genotyped.g.vcf.gz \
+   -O filtered.g.vcf.gz\
+   --filter-name "QD37"\
+   --filter-expression "QD > 37.0" \
+   --filter-name "FS60"\
+   --filter-expression "FS > 60.0" \
+   --filter-name "SOR5"\
+   --filter-expression "SOR > 5.0" \
+   --filter-name "MQ25"\
+   --filter-expression "MQ < 25.0"\
+ ````
 ## selecting.
-SelectVariants was used for selecting. This tool makes it possible to select a subset of variants based on various criteria in order to facilitate certain analyses. The criteria we used in this tool were for selecting variants that have passed all the filtering threshholds and from the output of this we selected SNPs. the scripts we used are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/select.sh) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Scripts/snpselect.sh) respectively.The results on the same are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Select.png) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Snps%20selected.png) respectively.
+SelectVariants was used for selecting. This tool makes it possible to select a subset of variants based on various criteria in order to facilitate certain analyses. The criteria we used in this tool were for selecting variants that have passed all the filtering threshholds and from the output of this we selected SNPs. the scripts we used 
+````
+#selects the pass variants
+ gatk SelectVariants \
+     -R Pfalciparum.genome.fasta \
+     -V filtered.g.vcf.gz \
+     --select 'vc.isNotFiltered()' \
+     -O selected.g.vcf.gz
+````     
+and
+````
+gatk SelectVariants \
+    -V selected.g.vcf.gz \
+    -select-type SNP \
+    -O snps.g.vcf.gz
+````    
+The results on the same are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Select.png) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Snps%20selected.png) respectively.
 ## snpEff
 SnpEff is an open source tool that annotates variants and predicts their effects on genes by using an interval forest approach. This program takes pre-determined variants listed in a data file that contains the nucleotide change and its position and predicts if the variants are deleterious.
 ### Building database.
@@ -92,9 +172,23 @@ The snpEff annotation gives three files as output; vcf file[click here](https://
 We then investigated population structure using principal components analysis.Examing population structure can give us a great deal of insight into the history and origin of populations. To perform a PCA on our snp.ann.vcf data, we used plink -version (1.9). The following are the steps we took;
 ### 1.Linkage pruning
 One of the major assumptions of PCA is that the data we use is indpendent, so as a first step, we need to prune our dataset of variants that are in linkage. We begun by creating a directory were we carried out all the steps necessary for pca analysis.
-The script we used to do linkage pruning is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_scripts/plunsit.sh).When complete, it will write out two files cichlids.prune.in[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids.prune.in) and cichlids.prune.out[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids.prune.out). The first one is a list of sites which fell below our linkage threshold - i.e. those we should retain. The other file is the opposite of this.
+The script we used to do linkage pruning is
+````
+# perform linkage pruning - i.e. identify prune sites
+plink --vcf snp.ann.vcf --double-id --allow-extra-chr \
+--set-missing-var-ids @:# \
+--indep-pairwise 50 10 0.1 --out cichlids
+````
+When complete, it will write out two files cichlids.prune.in[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids.prune.in) and cichlids.prune.out[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids.prune.out). The first one is a list of sites which fell below our linkage threshold - i.e. those we should retain. The other file is the opposite of this.
 ### 2.Perform a PCA
-Next we rerun plink with a few additional arguments to get it to conduct a PCA.[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_scripts/pca.sh) for the script we used.The output gave us a series of new files which; three plink binary [bim](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.bim),[bed](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.bed),[fam](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.fam) files and two PCA output cichlids.eigenval[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.eigenval) cichlids.eigenvec[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.eigenvec)
+Next we rerun plink with a few additional arguments to get it to conduct a PCA;
+````
+# create pca
+plink --vcf snp.ann.vcf --double-id --allow-extra-chr --set-missing-var-ids @:# \
+--extract cichlids.prune.in \
+--make-bed --mind --pca --out cichlids_pca
+````
+The output gave us a series of new files which; three plink binary [bim](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.bim),[bed](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.bed),[fam](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.fam) files and two PCA output cichlids.eigenval[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.eigenval) cichlids.eigenvec[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/cichlids_pca.eigenvec)
 ### 3.Plotting the PCA output
 We then turned to R to plot the analysis we have produced!
 We first moved the plink output (the two PCA output) into the working directory,then loaded the tidyverse package.
@@ -107,7 +201,50 @@ With these variables created, we remade our data.frame. Note the use of as.tibbl
 We first made a plot of the eigenvalues[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/Rplot_pca_pva.pdf)
 We then calculated the cumulative sum of the percentage variance.
 Next we moved on to the actual plotting of our PCA. 
-The Rscript we used for performing all this is as provided [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/Plink_pca_Rscripts/plink_pca.R) 
+The Rscript we used for performing all this is as provided 
+````
+# load tidyverse package
+library(tidyverse)
+# read in data
+pca <- read_table("./cichlids_pca.eigenvec", col_names = FALSE)
+eigenval <- scan("./cichlids_pca.eigenval")
+
+#CLEANING UP THE DATA
+# sort out the pca data
+# remove nuisance column
+pca <- pca[,-1]
+# set names
+names(pca)[1] <- "samples"
+names(pca)[2:ncol(pca)] <- paste0("PC", 1:(ncol(pca)-1))
+#sorting pops
+# location
+pop <- rep(NA, length(pca$samples))
+pop[grep("PA", pca$samples)] <- "Cambodia"
+pop[grep("PD0504-C", pca$samples)] <- "Thailand"
+pop[grep("PD0519-C", pca$samples)] <- "Thailand"
+pop[grep("GB4", pca$samples)] <- "Congo"
+
+# remake data.frame
+pca <- as_tibble(data.frame(pca, pop))
+#Remove unwanted columns
+pca <- pca[,-22]
+
+# first convert to percentage variance explained
+pve <- data.frame(eigenvals = 1:20, pve = eigenval/sum(eigenval)*100)
+
+# make plot
+a <- ggplot(pve, aes(eigenvals, pve)) + geom_bar(stat = "identity")
+a + ylab("Percentage variance explained") + theme_light()
+
+# calculate the cumulative sum of the percentage variance explained
+cumsum(pve$pve)
+
+# plot pca
+b <- ggplot(pca, aes(PC1, PC2, col = pop )) + geom_point(size = 3)
+b <- b + scale_colour_manual(values = c("red", "blue" ,"green"))
+b <- b + coord_equal() + theme_light()
+b + xlab(paste0("PC1 (", signif(pve$pve[1], 3), "%)")) + ylab(paste0("PC2 (", signif(pve$pve[2], 3), "%)"))
+```` 
 The pca plot we got is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/Rplot_pca.pdf)
 ## Conclusion
 We successfully managed to do variant discovery, annotation of the variants and population structure using principle component analysis.
