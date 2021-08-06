@@ -94,7 +94,20 @@ We then investigated population structure using principal components analysis.Ex
 One of the major assumptions of PCA is that the data we use is indpendent, so as a first step, we need to prune our dataset of variants that are in linkage. We begun by creating a directory were we carried out all the steps necessary for pca analysis.
 The script we used to do linkage pruning is [here]().When complete, it will write out two files cichlids.prune.in[click here]() and cichlids.prune.out[click here](). The first one is a list of sites which fell below our linkage threshold - i.e. those we should retain. The other file is the opposite of this.
 ### 2.Perform a PCA
-Next we rerun plink with a few additional arguments to get it to conduct a PCA.[click here]() for the script we used. Once the command is run, we will see a series of new files which includes three plink binary files and PCA output. 
+Next we rerun plink with a few additional arguments to get it to conduct a PCA.[click here]() for the script we used.The output gave us a series of new files which; three plink binary [bim](),[bed](),[fam]() files and two PCA output cichlids.eigenval[click here]() cichlids.eigenvec[click here]()
+### 3.Plotting the PCA output
+We then turned to R to plot the analysis we have produced!
+We first moved the plink output (the two PCA output) into the working directory,then loaded the tidyverse package.
+We then used a combination of readr and the standard scan function to read in the data.
+#### Cleaning up the data
+The output we got after reading in and scanning  was not in reasonable form, so we had to clean it up by first removing a nuisance column then gave our pca data.frame proper column names.
+. We will do this using the R version of grep. We then use paste0 to combine the columns.
+With these variables created, we remade our data.frame. Note the use of as.tibble to ensure that we make a tibble for easy summaries
+#### Plotting the data
+We first made a plot of the eigenvalues. It is quite straightforward to translate these into percentage variance explained. We then created bar plot showing the percentage of variance each principal component explains.
+We could calculate this with the cumsum function
+Next we moved on to the actual plotting of our PCA. 
+The Rscript we used for performing all this is as provided [here]() 
 ## Conclusion
 We successfully managed to do variant discovery and annotation of the variants.
 
