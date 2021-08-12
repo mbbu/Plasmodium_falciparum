@@ -50,6 +50,8 @@ parallel 'gatk HaplotypeCaller -R Pfalciparum.genome.fasta  -I {} -O {}.hppc.g.v
 
 ````  
 and the result is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Haplotypecaller.png).
+![image](https://user-images.githubusercontent.com/73896021/129188872-b49a1eb9-69ab-4dcb-b52c-ec1f06206194.png)
+
 ## Combining.
 We merged our HaplotypeCaller GVCF files into a single GVCF with appropriate annotations using CombineGVCFs.CombineGVCFs is meant to be used for merging of GVCFs that will eventually be input into GenotypeGVCFs.
 The script used for CombineGVCFs
@@ -58,6 +60,8 @@ ls vcf* > vcf.list
 gatk CombineGVCFs -R Pfalciparum.genome.fasta --variant vcfs.list -O combined.g.vcf.gz 
 ````
 and result [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/combinedvcf.png).
+![image](https://user-images.githubusercontent.com/73896021/129189010-90809592-d7f9-4877-bae4-3f8207ec0291.png)
+
 ## Genotyping.
 We genotyped the combined GVCF file obtained from the CombineGVCFs tool using GenotypeGVCFs.This tool is designed to perform joint genotyping on a single input, which may contain one or many samples. In any case, the input samples must possess genotype likelihoods produced by HaplotypeCaller with _-ERC GVCF_ or _-ERC BP_RESOLUTION_
 The script used;
@@ -68,6 +72,8 @@ gatk --java-options "-Xmx4g" GenotypeGVCFs \
    -O genotyped.g.vcf.gz
 ````
 and result [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Genotyped.png).
+![image](https://user-images.githubusercontent.com/73896021/129189156-4e44f1b6-06e2-4008-9d00-b727455fd782.png)
+
 ## Assigning quality score
 We used Hard-filtering germline short variants guidelines for filtering.
 Hard-filtering consists of choosing specific thresholds for one or more annotations and throwing out any variants that have annotation values above or below the set thresholds. By annotations, we mean properties or statistics that describe for each variant(QD,MQ,FS,DP,SOR,). 
@@ -99,6 +105,7 @@ FS.plot <- ggplot(data = Hardfilter, aes(x=FS)) + geom_density(alpha=0.2)
 FS.plot + scale_x_log10()
 ````
 and the results are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Hardfilter.table) and result [here](https://github.com/bolekj/Plasmodium_falciparum/tree/master/ggplot/.
+
 After obtaining the thresholds, gatk's VariantFiltration tool (which is designed for hard-filtering variant calls based on certain criteria) was used.The script used;
 ````
 gatk VariantFiltration \
