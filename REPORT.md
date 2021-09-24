@@ -50,8 +50,6 @@ parallel 'gatk HaplotypeCaller -R Pfalciparum.genome.fasta  -I {} -O {}.hppc.g.v
 
 ````  
 and the result is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Haplotypecaller.png).
-![image](https://user-images.githubusercontent.com/73896021/129188872-b49a1eb9-69ab-4dcb-b52c-ec1f06206194.png)
-
 ## Combining.
 We merged our HaplotypeCaller GVCF files into a single GVCF with appropriate annotations using CombineGVCFs.CombineGVCFs is meant to be used for merging of GVCFs that will eventually be input into GenotypeGVCFs.
 The script used for CombineGVCFs
@@ -60,8 +58,6 @@ ls vcf* > vcf.list
 gatk CombineGVCFs -R Pfalciparum.genome.fasta --variant vcfs.list -O combined.g.vcf.gz 
 ````
 and result [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/combinedvcf.png).
-![image](https://user-images.githubusercontent.com/73896021/129189010-90809592-d7f9-4877-bae4-3f8207ec0291.png)
-
 ## Genotyping.
 We genotyped the combined GVCF file obtained from the CombineGVCFs tool using GenotypeGVCFs.This tool is designed to perform joint genotyping on a single input, which may contain one or many samples. In any case, the input samples must possess genotype likelihoods produced by HaplotypeCaller with _-ERC GVCF_ or _-ERC BP_RESOLUTION_
 The script used;
@@ -72,8 +68,6 @@ gatk --java-options "-Xmx4g" GenotypeGVCFs \
    -O genotyped.g.vcf.gz
 ````
 and result [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Genotyped.png).
-![image](https://user-images.githubusercontent.com/73896021/129189156-4e44f1b6-06e2-4008-9d00-b727455fd782.png)
-
 ## Assigning quality score
 We used Hard-filtering germline short variants guidelines for filtering.
 Hard-filtering consists of choosing specific thresholds for one or more annotations and throwing out any variants that have annotation values above or below the set thresholds. By annotations, we mean properties or statistics that describe for each variant(QD,MQ,FS,DP,SOR,). 
@@ -105,7 +99,6 @@ FS.plot <- ggplot(data = Hardfilter, aes(x=FS)) + geom_density(alpha=0.2)
 FS.plot + scale_x_log10()
 ````
 and the results are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Hardfilter.table) and result [here](https://github.com/bolekj/Plasmodium_falciparum/tree/master/ggplot/.
-
 After obtaining the thresholds, gatk's VariantFiltration tool (which is designed for hard-filtering variant calls based on certain criteria) was used.The script used;
 ````
 gatk VariantFiltration \
@@ -121,8 +114,6 @@ gatk VariantFiltration \
    --filter-name "MQ25"\
    --filter-expression "MQ < 25.0"\
  ````
- ![image](https://user-images.githubusercontent.com/73896021/129189901-2973215b-846f-4485-8f52-f991ac1a7abd.png)
-
 ## selecting.
 SelectVariants was used for selecting. This tool makes it possible to select a subset of variants based on various criteria in order to facilitate certain analyses. The criteria we used in this tool were for selecting variants that have passed all the filtering threshholds and from the output of this we selected SNPs. the scripts we used 
 ````
@@ -141,9 +132,6 @@ gatk SelectVariants \
     -O snps.g.vcf.gz
 ````    
 The results on the same are [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Select.png) and [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Snps%20selected.png) respectively.
-![image](https://user-images.githubusercontent.com/73896021/129189744-b31e3f12-1033-4cd0-84d7-7bff02ecfe31.png)
-![image](https://user-images.githubusercontent.com/73896021/129189792-27854a61-a10e-43a9-ae72-de62f836fd21.png)
-
 ## snpEff
 SnpEff is an open source tool that annotates variants and predicts their effects on genes by using an interval forest approach. This program takes pre-determined variants listed in a data file that contains the nucleotide change and its position and predicts if the variants are deleterious.
 ### Building database.
@@ -180,8 +168,6 @@ Annotation is the process of identifying the locations of genes and all of the c
 java -Xmx8g -jar snpEff.jar 3D7v.31 /opt/data/oscarmwaura/data/snps.g.vcf.gz  > snp.ann.g.vcf.gz
 ````
 The snpEff annotation gives three files as output; vcf file[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/Results_snapshots/Annotated_snps.png) , txt file[click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/snpEff_genes.txt) and html [click here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/snpEff_summary.html)
-![image](https://user-images.githubusercontent.com/73896021/129189979-6421b7d8-c041-417f-b0cb-aa8535e7ac95.png)
-
 ## Population structure: PCA
 We then investigated population structure using principal components analysis.Examing population structure can give us a great deal of insight into the history and origin of populations. To perform a PCA on our snp.ann.vcf data, we used plink -version (1.9). The following are the steps we took;
 ### 1.Linkage pruning
@@ -260,7 +246,6 @@ b <- b + coord_equal() + theme_light()
 b + xlab(paste0("PC1 (", signif(pve$pve[1], 3), "%)")) + ylab(paste0("PC2 (", signif(pve$pve[2], 3), "%)"))
 ```` 
 The pca plot we got is [here](https://github.com/bolekj/Plasmodium_falciparum/blob/master/plink_output/plink_pca_results/Rplot_pca.pdf)
-
 ## Conclusion
 We successfully managed to do variant discovery, annotation of the variants and population structure using principle component analysis.
 The results we obtained in all the steps are not as obtained in the paper because when downloading we did not get all the raw data.
